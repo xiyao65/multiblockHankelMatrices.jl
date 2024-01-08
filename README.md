@@ -52,7 +52,7 @@ fullHankel(Hankel(s,p))
 ```
 
 
-## Implemented interface
+## fun
 
 ### Operations
 
