@@ -27,10 +27,13 @@ A Hankel matrix has constant anti-diagonals, for example,
   2  3  4
   3  4  5 ]
 ```
-There are a few ways to construct the above `Hankel{Int}`:
-- `Hankel([1,2,3,4], (2,3)) # Hankel(v, (h,w))`
-- `Hankel([1,2,3,4], 2,3) # Hankel(v, h, w)`
-- `Hankel([1,2], [2,3,4]) # Hankel(vc, vr)`
+We define the Hankel matrix via the array involved and the index of pencil parameter: 
+```julia
+Hankel(s,p)
+```
+where s = [1 2 3 4 5 ] is the array to store the element for first column and last row, and p = 3 is the pencial parameter. 
+
+
 
 Note that the width is usually useless, since ideally, `w=length(v)-h+1`. It exists for infinite Hankel matrices. Its existence also means that `v` could be longer than necessary. `Hankel(v)`, where the size is not given, returns `Hankel(v, (l+1)÷2, (l+1)÷2)` where `l=length(v)`.
 
