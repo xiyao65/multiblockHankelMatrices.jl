@@ -42,8 +42,9 @@ The reason we set the pencil parameter is to easily expanded to multiblock Hanke
  3 4 5  4 5 6
  2 3 4  3 4 5 
  3 4 5  4 5 6
- 4 5 6  5 5 7]
+ 4 5 6  5 6 7]
 ```
+where s=[ 1 2 3 4 5; 2 3 4 4 6; 3 4 5 6 7; ], p=[3,2]
 
 
 ## Implemented interface
