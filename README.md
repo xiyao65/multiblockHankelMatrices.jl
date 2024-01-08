@@ -19,24 +19,6 @@ using FFTW
 
 ## Introduction
 
-### Toeplitz
-A Toeplitz matrix has constant diagonals. It can be constructed using
-```julia
-Toeplitz(vc,vr)
-Toeplitz{T}(vc,vr)
-```
-where `vc` are the entries in the first column and `vr` are the entries in the first row, where `vc[1]` must equal `vr[1]`. For example.
-```julia
-Toeplitz(1:3, [1.,4.,5.])
-```
-is a sparse representation of the matrix
-```julia
-[ 1.0  4.0  5.0
-  2.0  1.0  4.0
-  3.0  2.0  1.0 ]
-```
-### Special toeplitz
-`SymmetricToeplitz`, `Circulant`, `UpperTriangularToeplitz` and `LowerTriangularToeplitz` only store one vector. By convention, `Circulant` stores the first column rather than the first row. They are constructed using `TYPE(v)` where `TYPE`∈{`SymmetricToeplitz`, `Circulant`, `UpperTriangularToeplitz`, `LowerTriangularToeplitz`}.
 
 ### Hankel
 A Hankel matrix has constant anti-diagonals, for example,
