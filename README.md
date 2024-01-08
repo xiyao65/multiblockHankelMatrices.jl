@@ -52,108 +52,13 @@ fullHankel(Hankel(s,p))
 ```
 
 
-## fun
+## functions
 
-### Operations
+### Matrix-vector multiplication 
+The FFT is implemented for fast matrix-vector multiplication unless the size of the one-dimensional Hankel matrix is less than 512. Moreover, the initialization for the required arrays FFT is planed in advance only once with `LinearAlgebra.factorize` to avoid repetitive calculations.
 
-<details>
-  <summary>Full list</summary>
-  
-- ✓ implemented
-- ✗ error
-- _ fall back to `Matrix`
+### Truncated SVD for Hankel matrix
 
-||Toeplitz|Symmetric~|Circulant|UpperTriangular~|LowerTriangular~|Hankel|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|getindex|✓|✓|✓|✓|✓|✓|
-|.vc|✓|✓|✓|✓|✓|✓|
-|.vr|✓|✓|✓|✓|✓|✓|
-|size|✓|✓|✓|✓|✓|✓|
-|copy|✓|✓|✓|✓|✓|✓|
-|similar|✓|✓|✓|✓|✓|✓|
-|zero|✓|✓|✓|✓|✓|✓|
-|real|✓|✓|✓|✓|✓|✓|
-|imag|✓|✓|✓|✓|✓|✓|
-|fill!|✓|✗|✗|✗|✗|✓|
-|conj|✓|✓|✓|✓|✓|✓|
-|transpose|✓|✓|✓|✓|✓|✓|
-|adjoint|✓|✓|✓|✓|✓|✓|
-|tril!|✓|✗|✗|✓|✓|✗|
-|triu!|✓|✗|✗|✓|✓|✗|
-|tril|✓|✓|✓|✓|✓|✗|
-|triu|✓|✓|✓|✓|✓|✗|
-|+|✓|✓|✓|✓|✓|✓|
-|-|✓|✓|✓|✓|✓|✓|
-|scalar<br>mult|✓|✓|✓|✓|✓|✓|
-|==|✓|✓|✓|✓|✓|✓|
-|issymmetric|||||||
-|istriu|||||||
-|istril|||||||
-|iszero|✓|✓|✓|✓|✓||
-|isone|||||||
-|diag|✓|✓|✓|✓|✓|✓|
-|copyto!|✓|✓|✓|✓|✓|✓|
-|reverse|✓|✓|✓|✓|✓|✓|
-|broadcast|||||||
-|broadcast!|||||||
-  
-</details>
 
-Note that scalar multiplication, `conj`, `+` and `-` could be removed once `broadcast` is implemented.
 
-`reverse(Hankel)` returns a `Toeplitz`, while `reverse(AbstractToeplitz)` returns a `Hankel`.
-
-### LinearAlgebra
-
-### Constructors and conversions
-||Toeplitz|Symmetric~|Circulant|UpperTriangular~|LowerTriangular~|Hankel|
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-|from AbstractVector|✓|✓|✓|✓|✓|✓|
-|from AbstractMatrix|✓|✓|✓|✓|✓|✓|
-|from AbstractToeplitz|✓|✓|✓|✓|✓|✗|
-|to supertype|✓|✓|✓|✓|✓|✓|
-|to Toeplitz|-|✓|✓|✓|✓|✗|
-|to another eltype|✓|✓|✓|✓|✓|✓|
-
-When constructing `Toeplitz` from a matrix, the first row and the first column will be considered as `vr` and `vc`. Note that `vr` and `vc` are copied in construction to avoid the cases where they share memory. If you don't want copying, construct using vectors directly.
-
-When constructing `SymmetricToeplitz` or `Circulant` from `AbstractMatrix`, a second argument shall specify whether the first row or the first column is used. For example, for `A = [1 2; 3 4]`, 
-- `SymmetricToeplitz(A,:L)` gives `[1 3; 3 1]`, while
-- `SymmetricToeplitz(A,:U)` gives `[1 2; 2 1]`.
-
-For backward compatibility and consistency with `LinearAlgebra.Symmetric`,
-```julia
-SymmetricToeplitz(A) = SymmetricToeplitz(A, :U)
-Circulant(A) = Circulant(A, :L)
-```
-`Hankel` constructor also accepts the second argument, `:L` denoting the first column and the last row while `:U` denoting the first row and the last column.
-
-`Symmetric`, `UpperTriangular` and `LowerTriangular` from `LinearAlgebra` are also overloaded for convenience.
-```julia
-Symmetric(T::Toeplitz) = SymmetricToeplitz(T)
-UpperTriangular(T::Toeplitz) = UpperTriangularToeplitz(T)
-LowerTriangular(T::Toeplitz) = LowerTriangularToeplitz(T)
-```
-
-### TriangularToeplitz (obsolete)
-`TriangularToeplitz` is reserved for backward compatibility. 
-```julia
-TriangularToeplitz = Union{UpperTriangularToeplitz,LowerTriangularToeplitz}
-```
-The old interface is implemented by
-```julia
-getproperty(UpperTriangularToeplitz,:uplo) = :U
-getproperty(LowerTriangularToeplitz,:uplo) = :L
-```
-This type is **obsolete** and will not be updated for features. Despite that, backward compatibility should be maintained. Codes that were using `TriangularToeplitz` should still work.
-
-## Unexported interface
-Methods in this section are not exported.
-
-`_vr(A::AbstractMatrix)` returns the first row as a vector.
-`_vc(A::AbstractMatrix)` returns the first column as a vector.
-`_vr` and `_vc` are implemented for `AbstractToeplitz` as well. They are used to merge similar codes for `AbstractMatrix` and `AbstractToeplitz`.
-
-`_circulate(v::AbstractVector)` converts between the `vr` and `vc` of a `Circulant`.
-
-`isconcrete(A::Union{AbstractToeplitz,Hankel})` decides whether the stored vector(s) are concrete. It calls `Base.isconcretetype`.
+### Adjoint operator $$ \mathcal{H}^* $$ on low-rank matrix 
