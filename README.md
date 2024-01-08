@@ -27,11 +27,13 @@ A Hankel matrix has constant anti-diagonals, for example,
   2  3  4
   3  4  5 ]
 ```
-We define the Hankel matrix via the array involved and the index of pencil parameter: 
+We define the Hankel matrix via the array involved and the index of the pencil parameter: 
 ```julia
 Hankel(s,p)
 ```
-where s = [1 2 3 4 5 ] is the array to store the element for first column and last row, and p = 3 is the pencial parameter. 
+where s = [1 2 3 4 5 ] is the array to store the elements for the first column and last row, and p = 3 is the pencil parameter. 
+
+### Multiblock  Hankel 
 
 
 
