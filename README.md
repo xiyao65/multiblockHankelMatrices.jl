@@ -1,9 +1,6 @@
 # multiblockHankelMatrices.jl
 ===========
 This is a Julia package related to Multiblock Hankel Matrices structures. It mainly used for spectral compressed seeing and has several functions implemented with FFT.
-[![Build Status](https://github.com/JuliaLinearAlgebra/ToeplitzMatrices.jl/workflows/CI/badge.svg?branch=master)](https://github.com/JuliaLinearAlgebra/ToeplitzMatrices.jl/actions/workflows/CI.yml?query=branch%3Amaster)
-[![Coverage](https://codecov.io/gh/JuliaLinearAlgebra/ToeplitzMatrices.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/JuliaLinearAlgebra/ToeplitzMatrices.jl)
-[![Coverage](https://coveralls.io/repos/github/JuliaLinearAlgebra/ToeplitzMatrices.jl/badge.svg?branch=master)](https://coveralls.io/github/JuliaLinearAlgebra/ToeplitzMatrices.jl?branch=master)
 
 Fast matrix multiplication and division
 for Toeplitz, Hankel and circulant matrices in Julia
