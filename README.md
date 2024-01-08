@@ -7,8 +7,7 @@ Fast matrix multiplication for multiblock Hankel matrices in Julia
 
 ## Note
 
-Multiplication of large matrices and `sqrt`, `inv`, `LinearAlgebra.eigvals`,
-`LinearAlgebra.ldiv!`, and `LinearAlgebra.pinv` for circulant matrices
+Multiplication of large matrices for multiblock Hankel matrices
 are computed with FFTs.
 To be able to use these methods, you have to install and load a package that implements
 the [AbstractFFTs.jl](https://github.com/JuliaMath/AbstractFFTs.jl) interface such
