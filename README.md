@@ -35,11 +35,16 @@ where s = [1 2 3 4 5 ] is the array to store the elements for the first column a
 
 ### Multiblock  Hankel 
 
+The reason we set the pencil parameter is to easily expanded to multiblock Hankel matrices, i.e 2-D Hankel: 
+```julia
+[1 2 3  2 3 4
+ 2 3 4  3 4 5
+ 3 4 5  4 5 6
+ 2 3 4  3 4 5 
+ 3 4 5  4 5 6
+ 4 5 6  5 5 7]
+```
 
-
-Note that the width is usually useless, since ideally, `w=length(v)-h+1`. It exists for infinite Hankel matrices. Its existence also means that `v` could be longer than necessary. `Hankel(v)`, where the size is not given, returns `Hankel(v, (l+1)÷2, (l+1)÷2)` where `l=length(v)`.
-
-The `reverse` can transform between Hankel and Toeplitz. It is used to achieve fast Hankel algorithms.
 
 ## Implemented interface
 
