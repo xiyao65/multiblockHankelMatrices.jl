@@ -17,11 +17,6 @@ as [FFTW.jl](https://github.com/JuliaMath/FFTW.jl):
 using FFTW
 ```
 
-If you perform multiple calculations with FFTs, it can be more efficient to
-initialize the required arrays and plan the FFT only once. You can precompute
-the FFT factorization with `LinearAlgebra.factorize` and then use the factorization
-for the FFT-based computations.
-
 ## Introduction
 
 ### Toeplitz
