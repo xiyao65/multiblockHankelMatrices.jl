@@ -35,7 +35,7 @@ where s = [1 2 3 4 5 ] is the array to store the elements for the first column a
 
 ### Multiblock  Hankel 
 
-The reason we set the pencil parameter is to easily expanded to multiblock Hankel matrices, i.e 2-D Hankel: 
+The reason we set the pencil parameter is easily expanded to multiblock Hankel matrices, i.e 2-D Hankel: 
 ```julia
 [1 2 3  2 3 4
  2 3 4  3 4 5
@@ -45,6 +45,11 @@ The reason we set the pencil parameter is to easily expanded to multiblock Hanke
  4 5 6  5 6 7]
 ```
 where s=[ 1 2 3 4 5; 2 3 4 4 6; 3 4 5 6 7; ], p=[3,2]
+The scalar multiplication, `conj`, `+`, `-` and `transpose` are implemented with dense form. 
+Unless the fullHankel function is called, the explicit matrix form is not applied for computational and storage efficiency.
+```julia
+fullHankel(Hankel(s,p))
+```
 
 
 ## Implemented interface
