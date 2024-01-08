@@ -24,7 +24,8 @@ using FFTW
 A Hankel matrix has constant anti-diagonals, for example,
 ```julia
 [ 1  2  3
-  2  3  4 ]
+  2  3  4
+  3  4  5 ]
 ```
 There are a few ways to construct the above `Hankel{Int}`:
 - `Hankel([1,2,3,4], (2,3)) # Hankel(v, (h,w))`
