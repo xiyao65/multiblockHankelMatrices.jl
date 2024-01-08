@@ -61,4 +61,4 @@ The FFT is implemented for fast matrix-vector multiplication unless the size of 
 
 
 
-### Adjoint operator \(\mathcal{H}^*\) on low-rank matrix 
+### Adjoint operator \( \mathcal{H}^* \) on low-rank matrix 
