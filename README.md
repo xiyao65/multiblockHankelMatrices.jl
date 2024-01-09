@@ -70,7 +70,7 @@ U1 ,S1, V1=irlb(Hankel(s,p),r,tol,iter,ncv)
 # linear combination of Hankel and low-rank matirx X=U1*V1'
 U2 ,S2, V2=irlblr(Hankel(s,p),r,tol,iter,ncv,U1*S1,V1')
 # Iterative TSVD based on Riemann manifold
-U2 ,S2, V2 = rirmannsvd(U1,V1,Hankel(s,p))
+U2 ,S2, V2 = riemannsvd(U1,V1,Hankel(s,p))
 
 ```
 
