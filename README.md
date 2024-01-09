@@ -1,7 +1,7 @@
 # multiblockHankelMatrices.jl
 ===========
 
-This is a Julia package related to Multiblock Hankel Matrices structures. It mainly used for spectral compressed seeing and has several functions implemented with FFT.
+This is a Julia package related to Multiblock Hankel Matrices structures. It is mainly used for spectral compressed seeing and has several functions implemented with FFT.
 
 Fast matrix multiplication for multiblock Hankel matrices in Julia
 
@@ -55,10 +55,41 @@ fullHankel(Hankel(s,p))
 ## functions
 
 ### Matrix-vector multiplication 
-The FFT is implemented for fast matrix-vector multiplication unless the size of the one-dimensional Hankel matrix is less than 512. Moreover, the initialization for the required arrays FFT is planed in advance only once with `LinearAlgebra.factorize` to avoid repetitive calculations.
+The FFT is implemented for fast matrix-vector multiplication unless the size of the one-dimensional Hankel matrix is less than 512. 
 
 ### Truncated SVD for Hankel matrix
+We implemented the truncated SVD for Multi-block Hankel matrix using the augmented implicitly restarted Lanczos bidiagonalization methods [1] and has following advantages: 
+
+1. it is more efficient and tailored for the T-SVD than other Arnoldi methods.
+2. the initialization for the required arrays FFT is planned only once with `LinearAlgebra.factorize` to avoid repetitive calculations.
+3. Except for the standard irlb function the other two modified SVD, which are widely in Compressed Sensing is included.
+
+```julia
+# standard r-largest truncated SVD 
+U1 ,S1, V1=irlb(Hankel(s,p),r,tol,iter,ncv)
+# linear combination of Hankel and low-rank matirx X=U1*V1'
+U2 ,S2, V2=irlblr(Hankel(s,p),r,tol,iter,ncv,U1*S1,V1')
+# Iterative TSVD based on Riemann manifold
+U2 ,S2, V2 = rirmannsvd(U1,V1,Hankel(s,p))
+
+```
 
 
 
-### Adjoint operator \( \mathcal{H}^* \) on low-rank matrix 
+
+
+### Adjoint operator $ \mathcal{H}^* $ on low-rank matrix 
+
+The adjoint operator is widely applied to project the enhanced matrix to Hankel space. 
+For a matrix X=USV',the $\mathcal{H}^* X$ is operated with FFT as:
+
+```julia
+ph=projectlowtHankel(U,S,V,n_d,p_d)
+```
+
+
+
+
+
+## Reference 
+[1] Baglama, J. and Reichel, L., 2005. Augmented implicitly restarted Lanczos bidiagonalization methods. SIAM Journal on Scientific Computing, 27(1), pp.19-42.
