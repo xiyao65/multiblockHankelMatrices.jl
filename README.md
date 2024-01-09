@@ -78,10 +78,10 @@ U2 ,S2, V2 = rirmannsvd(U1,V1,Hankel(s,p))
 
 
 
-### Adjoint Hankel operator  on low-rank matrix 
+### Projection to Hankel matrix from low-rank matrix 
 
 The adjoint operator is widely applied to project the enhanced matrix to Hankel space. 
-For a matrix X=USV',the $\mathcal{H}^* X$ is operated with FFT as:
+For a matrix X=USV',the $\mathcal{H}^{\dagger} X$ is operated with FFT as:
 
 ```julia
 ph=projectlowtHankel(U,S,V,n_d,p_d)
