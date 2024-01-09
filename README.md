@@ -61,7 +61,7 @@ The FFT is implemented for fast matrix-vector multiplication unless the size of 
 We implemented the truncated SVD for Multi-block Hankel matrix using the augmented implicitly restarted Lanczos bidiagonalization methods [1] and has following advantages: 
 
 1. it is more efficient and tailored for the T-SVD than other Arnoldi methods.
-2. the initialization for the required arrays FFT is planned only once with `LinearAlgebra.factorize` to avoid repetitive calculations.
+2. the initialization for the required array's FFT is planned only once to avoid repetitive calculations.
 3. Except for the standard irlb function the other two modified SVD, which are widely in Compressed Sensing is included.
 
 ```julia
