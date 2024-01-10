@@ -1,15 +1,11 @@
 # this file is to make the multi_level Hankel matrix explicitly
-# module multihankel
-# import Pkg;
-# Pkg.add("DSP")
-# Pkg.add("FFTW")
-# Pkg.add("AbstractFFTs")
+
 using DSP
 using BenchmarkTools
 using FFTW
 using FFTW: Plan
 using Random
-# include("multiblockHankel.jl")
+
 
 using Random
 
@@ -25,12 +21,7 @@ export Hankel
 # # # # # # # # # # # # # # # # # # #   for FFT  # # # # # # # # # # # #
 function irlblr(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int64,U0::AbstractMatrix,V0::AbstractMatrix) where T
 
-   
-   ##prepare for FFTW
-   
 
-   
-   
     n_d=H.n_d
     p_d=H.p_d
     q_d=n_d.-p_d.+1
@@ -69,7 +60,6 @@ function irlblr(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int
       U[:,j] = uinv*U[:,j]
       # Lanczos process
           while(j<m_b)
-           # v = matrixvector.adstringvector(n_d,S,U[:,j],dft_s,idft_s)+V0*(U0'*U[:,j])
            v = H'*U[:,j]+V0*(U0'*U[:,j])
             mprod+=1
             v = v - u*V[:,j]
@@ -81,7 +71,6 @@ function irlblr(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int
                   V[:,j+1] = v
                   B[j,j] = u
                   B[j,j+1] = fn
-                #  U[:,j+1] =  matrixvector.stringvector(n_d,S,V[:,j+1],dft_s,idft_s)+U0*(V0'*V[:,j+1])
                  U[:,j+1] = H*V[:,j+1]+U0*(V0'*V[:,j+1])
                   mprod+=1
                   U[:,j+1] = U[:,j+1] - fn*U[:,j]
@@ -105,11 +94,9 @@ function irlblr(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int
          else
            smax = max(F.S[1],smax)
          end
-         # conv = count( <(tol*smax),abs.(R[1:nu]))
          conv = count( <(tol),abs.(R[1:nu]))
          # conv = k'
          if (conv<nu)
-           # k = max(conv+1, k)
            k = max(conv+nu, k)
            k = min(k, m_b-3)
            k =max(k,1)
@@ -129,11 +116,7 @@ function irlblr(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int
    end
     U = U[:,1:m_b]*F.U[:,1:nu]
     V = V[:,1:m_b]*F.V[:,1:nu]
-   
-    # println(["#mprod"              string(mprod)
-    #            "#it"              string(it)
-    #            "#error"              string(error_end)
-    #            ])
+
     return (U,F.S[1:nu],V,it, mprod)
    
    end # for inbounds
@@ -178,9 +161,6 @@ function extract(x::AbstractArray{T},n::Vector{Int},x_n::Vector{Int}) where T
     return result
 end
 function stringvector(s::Vector{T},p_s::Vector{Int64},q_s::Vector{Int64},x::AbstractArray{<:Number},y::AbstractArray{<:Number},α::Number) where T <:Number
-  # function stringvector(s::Vector{T},p_s::Vector{Int64},q_s::Vector{Int64},x::Vector{T},y::Vector{T},α::Number) where T
-    # stringvector(A.element,A.p_d,A.q_d,x,y,α )
-    #    s=ComplexF64.(s)
        @inbounds for j in 1:prod(q_s)
            tmp = α * x[j]
        for i in 1:prod(p_s)
@@ -206,10 +186,7 @@ end
    # # # # # # # # # # # # # # # # # # #   for FFT  # # # # # # # # # # # #
 
 abstract type AbstractHankel{T<:Number} <: AbstractMatrix{T} end
-
-
 size(A::AbstractHankel) = (size(A, 1), size(A, 2))
-
 
 function getindex(A::AbstractHankel, i::Integer)
     return A[mod(i - 1, size(A, 1)) + 1, div(i - 1, size(A, 1)) + 1]
@@ -217,9 +194,6 @@ end
 
 convert(::Type{AbstractMatrix{T}}, S::AbstractHankel) where {T} = convert(AbstractHankel{T}, S)
 convert(::Type{AbstractArray{T}}, S::AbstractHankel) where {T} = convert(AbstractHankel{T}, S)
-
-
-
 
 # Fast application of a general Hankel matrix to a column vector via FFT
 function mul!(y::StridedVector, A::AbstractHankel, x::StridedVector, α::Number, β::Number)
@@ -251,8 +225,6 @@ function mul!(y::StridedVector, A::AbstractHankel, x::StridedVector, α::Number,
     end
     return y
 end
-
-
 function mul!(C::StridedMatrix, A::AbstractHankel, B::StridedMatrix, α::Number, β::Number)
     l = size(B, 2)
     if size(C, 2) != l
@@ -402,43 +374,13 @@ function orthog(X::Matrix{T},Y::Array{T}) where T
       mul!(Y, X, h, -one(T), one(T))
       return Y
 end
-# function irlb(S::Array{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int64) where T
+
 function irlb(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int64) where T
-    #  """Estimate a few of the largest singular values and corresponding singular
-    # vectors of matrix using the implicitly restarted Lanczos bidiagonalization
-    # method of Baglama and Reichel, see:
-    # Augmented Implicitly Restarted Lanczos Bidiagonalization Methods,
-    # J. Baglama and L. Reichel, SIAM J. Sci. Comput. 2005
-    # Keyword arguments:
-    # tol   -- An estimation tolerance. Smaller means more accurate estimates.
-    # maxit -- Maximum number of Lanczos iterations allowed.
-    # Given an input matrix A of dimension j * k, and an input desired number
-    # of singular values L, the function returns a tuple X with five entries:
-    # X[0] A j * nu matrix of estimated left singular vectors.
-    # X[1] A vector of length nu of estimated singular values.
-    # X[2] A k * nu matrix of estimated right singular vectors.
-    # X[3] The number of Lanczos iterations run.
-    # X[4] The number of matrix-vector products run.
-    # The algorithm estimates the truncated singular value decomposition:
-    # A.dot(X[2]) = X[0]*X[1].
-    # """
-   
-   ##prepare for FFTW
-   
-    S=H.element
-    dft_s=H.dft_s
-    idft_s=H.idft_s
-    # tmp=vec(S)
-    # dft_s=plan_fft(tmp)
-    # idft_s=plan_ifft(tmp)
-   
-   
+ 
     n_d=H.n_d
     p_d=H.p_d
     q_d=H.q_d
-    # n_d=collect(size(S))
-    # p_d=fld.(n_d,2).+1
-    # q_d=n_d.-p_d.+1
+
       # hankelmatrix is pp*qq dimension
     nu     = L # the size of extreme singular value
     m      = prod(p_d)
@@ -461,7 +403,6 @@ function irlb(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int64
    @inbounds begin
     while(it < maxit)
       if(it>0) j=k end
-    #   U[:,j] = matrixvector.stringvector(n_d,S,V[:,j],dft_s,idft_s)
       U[:,j] = H*V[:,j]
       mprod+=1
       if(it>0)
@@ -472,7 +413,6 @@ function irlb(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int64
       U[:,j] = uinv*U[:,j]
       # Lanczos process
           while(j<m_b)
-        #    v = matrixvector.adstringvector(n_d,S,U[:,j],dft_s,idft_s)
            v = adjoint(H)*U[:,j]
             mprod+=1
             v = v - u*V[:,j]
@@ -484,7 +424,6 @@ function irlb(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int64
                   V[:,j+1] = v
                   B[j,j] = u
                   B[j,j+1] = fn
-                #  U[:,j+1] =  matrixvector.stringvector(n_d,S,V[:,j+1],dft_s,idft_s)
                  U[:,j+1] =  H*V[:,j+1]
                   mprod+=1
                   U[:,j+1] = U[:,j+1] - fn*U[:,j]
@@ -532,11 +471,7 @@ function irlb(H::AbstractHankel{T}, L::Int64,tol::Float64,maxit::Int64,kn::Int64
    end
     U = U[:,1:m_b]*F.U[:,1:nu]
     V = V[:,1:m_b]*F.V[:,1:nu]
-   
-    # println(["#mprod"              string(mprod)
-    #            "#it"              string(it)
-    #            "#error"              string(error_end)
-    #            ])
+
     return (U,F.S[1:nu],V,it, mprod)
    
    end # for inbounds
@@ -570,64 +505,4 @@ end
 
 
 
-
-
-
-
-
-Random.seed!(1234)
-# s=rand(Int64,(100,700))
-s=rand([1,2,3,4,5,6],(2000))
-
-
-
-# s=Float64.(s)
-
-
-
-# @time h=mulHankel(s,[50,50])
-
-
-tt=Hankel(s, [1000])
-
-
-
-
-# display("text/plain",h2)
-
-
-x=randn(Float64,size(tt,2))
-y=randn(ComplexF64,size(tt,1))
-
-
-
-# display("text/plain",s)
-# display("text/plain",x)
-
-#  @time r1=tt*x
-
- 
-#  @time r1=tt'*y
-#  tt2=tt+tt1
-@time h=fullHankel(tt)
-# h=Float64.(h)
-
-# @time r2=h*x
-
-
- 
-#  display("text/plain", tt)
-#  display("text/plain",norm(r1-r2))
-
- @time U_o, S_o, V_o =svd(h)
- @time U ,S, V,it,mprod=irlb(tt,5,1e-10,100,10)
-#  @time U ,S, V=rimansvd(U,V,S,tt.n_d,5)
-#  @time U ,S, V=riemannsvd(U,V,tt)
- @time U1 ,S1, V1,it,mprod=irlblr(tt,5,1e-10,100,10,U*0,V)
-println(norm(S-S1))
-oh=projectlowtHankel(U_o,S_o,V_o,tt.n_d,tt.p_d)
-#  show(stdout, "text/plain", (S - S_o[1:5]))
-
-
-display("text/plain", norm((tt-oh).element))
 # end
