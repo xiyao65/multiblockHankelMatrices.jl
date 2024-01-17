@@ -62,7 +62,7 @@ We implemented the truncated SVD for Multi-block Hankel matrix using the augment
 
 1. it is more efficient and tailored for the T-SVD than other Arnoldi methods.
 2. the initialization for the required array's FFT is planned only once to avoid repetitive calculations.
-3. Except for the standard irlb function the other two modified SVD, which are widely in Compressed Sensing is included.
+3. except for the standard irlb function the other two modified SVD, which are widely in Compressed Sensing is included.
 
 ```julia
 # standard r-largest truncated SVD 
