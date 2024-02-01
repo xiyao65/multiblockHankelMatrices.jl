@@ -44,7 +44,7 @@ The reason we set the pencil parameter is easily expanded to multiblock Hankel m
  3 4 5  4 5 6
  4 5 6  5 6 7]
 ```
-where s=[ 1 2 3 4 5; 2 3 4 4 6; 3 4 5 6 7; ], p=[3,2]
+where s=[ 1 2 3 4 5; 2 3 4 5 6; 3 4 5 6 7; ], p=[3,2]
 The scalar multiplication, `conj`, `+`, `-` and `transpose` are implemented with dense form. 
 Unless the fullHankel function is called, the explicit matrix form is not applied for computational and storage efficiency.
 ```julia
